@@ -1,0 +1,38 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.api-container {
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.api-container p {
+  margin: 0;
+}
+
+.error-message {
+  color: red;
+}
+
+.search-container {
+  align-items: center;
+}
+
+.search-input {
+  margin-bottom: 10px;
+}

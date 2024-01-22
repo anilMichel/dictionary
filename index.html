@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dictionary</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-input " placeholder="Enter a word">
+    <button onclick="findWord()" class="btn btn-outline-primary">Find</button>
+  </div>
+
+  <div class="api-container" id="apiResponse"></div>
+
+  <script>
+    // JavaScript code goes here
+    function findWord() {
+      // let displayBox = document.getElementById("apiResponse").display.hidden = false;
+      const searchInput = document.getElementById("searchInput").value;
+      const apiResponseElement = document.getElementById("apiResponse");
+      apiResponseElement.innerHTML = ""; // Clear previous content
+
+      if (searchInput.trim() === "") {
+        apiResponseElement.innerHTML = "<p class='error-message'>Please enter a word</p>";
+        return;
+      }
+
+      const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${searchInput}`;
+
+      // Fetch data from the API
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          // Check if the API returned an array of entries
+          if (Array.isArray(data)) {
+            // Iterate through each entry and print information
+            data.forEach(entry => {
+              apiResponseElement.innerHTML += "<p><strong>Word:</strong> " + entry.word + "</p>";
+
+              // Print phonetics information if available
+              if (entry.phonetics && entry.phonetics.length > 0) {
+                apiResponseElement.innerHTML += "<p><strong>Phonetics:</strong></p>";
+                entry.phonetics.forEach(phonetic => {
+                  apiResponseElement.innerHTML += `<p>Phonetic Word : ${phonetic.text}, <br> Audio: <a href="${phonetic.audio}" target="blank">Audio Link </a></p>`;
+                });
+              }
+
+              // Assuming meanings is an array
+              entry.meanings.forEach(meaning => {
+                apiResponseElement.innerHTML += "<p><strong>Part of Speech:</strong> " + meaning.partOfSpeech + "</p>";
+
+                // Assuming definitions is an array
+                meaning.definitions.forEach((definition, index) => {
+                  apiResponseElement.innerHTML += `<p><strong>Definition ${index + 1}:</strong> ${definition.definition}</p>`;
+                });
+              });
+            });
+          } else {
+            apiResponseElement.innerHTML = "<p class='error-message'>Word not found in the dictionary</p>";
+          }
+        })
+        .catch(error => apiResponseElement.innerHTML = "<p class='error-message'>Error fetching data: " + error + "</p>");
+    }
+  </script>
+
+</body>
+
+</html>
